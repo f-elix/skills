@@ -1,6 +1,6 @@
 ---
 name: code-quality-review
-description: Coordinates opinionated PR code reviews by fetching GitHub PR context, running focused reviewer personas, and synthesizing ranked findings. Use when reviewing pull requests, evaluating PR quality, or deciding which parts of a change deserve human review attention.
+description: Opinionated PR review that synthesizes design, code-quality, consistency, and change-risk findings. Use when reviewing pull requests, evaluating PR quality, or deciding which parts of a change deserve human review attention.
 ---
 
 # Code Quality Review
@@ -17,7 +17,7 @@ Use this skill to offload the tedious first pass of PR review while keeping the 
 2. If no PR can be resolved, or multiple PRs are possible, ask the user for a PR URL or number.
 3. Fetch PR metadata with `gh pr view --json title,body,files,commits,baseRefName,headRefName,url` and fetch the diff with `gh pr diff`.
 4. Read applicable project guidance such as `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, ADRs, and docs relevant to changed files.
-5. Classify changed files into review hotspots, architecturally important files, persona-relevant files, and mostly mechanical files.
+5. Classify changed files into review hotspots, design-important files, code-quality hotspots, persona-relevant files, and mostly mechanical files.
 6. Expand read-only source context only for selected hotspots where the diff is insufficient. Use PR head and optionally base.
 7. Spawn every persona listed in Persona Set. File triage controls context size, not whether a persona runs.
 8. Collect persona findings using the [review finding format](review-finding-format.md), not final user-facing output.
@@ -42,8 +42,9 @@ Final output order:
 
 1. `PR Summary`
 2. `Findings`
-3. `Human Review Route`
-4. `File Triage`
+3. `Code Quality Notes`
+4. `Human Review Route`
+5. `File Triage`
 
 ### File Triage
 
@@ -56,15 +57,16 @@ Final output order:
 - Treat review hotspots as the highest-priority files, flows, or diff sections for human attention.
 - Expand only selected hotspots with read-only source context from the PR head, and optionally base, when the diff alone is insufficient.
 - Treat changed tests as review evidence for intended behavior, risk, and coverage gaps.
-- Send relevant test diffs especially to Change Risk, Maintainability, and Consistency reviewers.
+- Send relevant test diffs especially to Change Risk, Code Quality, and Consistency reviewers.
 
 ### PR Summary
 
 - Explain what the PR changes.
 - Identify the most important design decisions.
+- Identify the most important readability, organization, and changeability concerns.
 - Name the complexity introduced by the PR.
 - Name the abstractions added or changed.
-- Separate architecturally important files from mostly mechanical files.
+- Separate design-important and code-quality-important files from mostly mechanical files.
 - Rank files worth deep human review by importance.
 
 ### Human Review Route
@@ -80,13 +82,24 @@ Final output order:
 - Use severity definitions from the [review finding format](review-finding-format.md).
 - Treat persona severity as a recommendation; the coordinator owns final severity after deduplication.
 - Include file and line references when available.
+- Ground each finding in what changed in the code and why that change causes the issue, not only a broad category such as "complexity" or "maintainability".
 - Explain why each finding matters under the engineering philosophy.
+- Include concrete code-quality findings when readability, organization, naming, locality, test shape, or failure behavior materially affects review quality.
 - Distinguish must-fix issues from judgment calls.
 - Keep summaries and findings concise. Prefer direct bullets over explanation-heavy prose.
 - If all personas return no high-signal findings, the coordinator should say `No major findings` and still provide the PR summary and Human Review Route.
 - Do not impose a fixed maximum number of findings; include every high-signal finding that materially affects review quality.
 - Do not prominently attribute every final finding to personas.
-- Mention supporting personas only when it improves confidence or explains severity, such as `supported by Architecture + Maintainability`.
+- Mention supporting personas only when it improves confidence or explains severity, such as `supported by Design + Code Quality`.
+
+### Code Quality Notes
+
+- Include detailed readability and cleanup notes that are too small for `Findings` but still useful for review.
+- Keep each note concrete: name the line or small code shape, why it hurts readability, and the suggested change.
+- Prefer notes about names, comments, dead code, duplicate code, parameter shape, local simplification, existing helpers, file placement, and local idioms.
+- Include small nitpicks when the fix is obvious and the comment would help the author polish the PR.
+- Do not include personal taste, formatting-only issues, or anything a formatter/linter should catch.
+- If there are no useful notes, write `No code quality notes`.
 
 ## Final Output Template
 
@@ -98,8 +111,12 @@ Final output order:
 
 ## Findings
 - [Severity] [Title] (`path:line`)
+  Evidence: [what changed in the code, or a quote]
   Why it matters: [one sentence]
   Human review: [what to inspect or decide]
+
+## Code Quality Notes
+- `path:line`: [specific readability or cleanup note]. Suggestion: [short fix]
 
 ## Human Review Route
 - `path/or/flow`: [why it matters]. Question: [what to decide]
@@ -115,16 +132,15 @@ Final output order:
 - Do not post GitHub review comments automatically.
 - Do not approve, request changes, merge, or mutate the PR.
 - Do not treat the synthesized review as a replacement for human review.
-- Prefer fewer, higher-signal findings over exhaustive commentary.
+- Prefer fewer, higher-signal `Findings`. `Code Quality Notes` may be more detailed when the notes are concrete and useful.
 - Do not fetch or pass existing PR review comments, review threads, or discussion comments to subagents.
 - Do not run local checks, tests, linters, typecheckers, builds, or repository commands other than GitHub PR metadata, diff fetching, and read-only source context for selected hotspots.
 
 ## Persona Set
 
-Spawn all five personas for every review.
+Spawn all four personas for every review.
 
-- [Architecture Reviewer](personas/architecture-reviewer.md)
-- [Complexity Reviewer](personas/complexity-reviewer.md)
+- [Design Reviewer](personas/design-reviewer.md)
+- [Code Quality Reviewer](personas/code-quality-reviewer.md)
 - [Consistency Reviewer](personas/consistency-reviewer.md)
-- [Maintainability Reviewer](personas/maintainability-reviewer.md)
 - [Change Risk Reviewer](personas/change-risk-reviewer.md)

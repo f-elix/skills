@@ -11,7 +11,7 @@ Subagents must return either `No findings worth raising` or a concise list of fi
   severity: Blocking | High | Medium | Low
   confidence: High | Medium | Low
   files: `path/to/file.ts:line`, `path/to/other-file.ts`
-  evidence: Short quote, diff reference, or concrete observation.
+  evidence: Short quote, diff reference, or what changed in the code.
   why_it_matters: One sentence tied to the engineering philosophy.
   suggested_human_review: What the user should inspect or decide, optionally with a brief fix direction.
 ```
@@ -21,6 +21,7 @@ Rules:
 - Keep every field short.
 - Do not include preamble or broad summary.
 - Include nits only when they are evidence of a larger issue.
+- Reject findings that only name a broad quality category. The evidence must identify what changed in the code and why that change creates the issue.
 - Do not include full patches or implementation instructions.
 - Allow brief suggested directions.
 - Do not imply tests pass or fail. Only evaluate what the test diff does or does not cover.
