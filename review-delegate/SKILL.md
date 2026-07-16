@@ -44,6 +44,8 @@ Do not restate static reviewer instructions. Tell each subagent to read and foll
 
 ## Required Output
 
+Speak in plain human language, with no jargon. Write simply and concisely, like one human talking to another.
+
 Final output order:
 
 1. `PR Summary`
