@@ -1,15 +1,16 @@
 ---
-name: code-quality-review
-description: Opinionated PR review that synthesizes design, code-quality, consistency, and change-risk findings. Use when reviewing pull requests, evaluating PR quality, or deciding which parts of a change deserve human review attention.
+name: review-delegate
+description: Delegates a PR's first review pass across design, code quality, consistency, and change risk. Use when reviewing pull requests or deciding where human review attention matters most.
 ---
 
-# Code Quality Review
+# Review Delegate
 
 Use this skill to offload the tedious first pass of PR review while keeping the user in the review loop.
 
 ## User Input
 
 - GitHub PR URL or number, or an open PR associated with the current branch.
+- Optional scope: one or more persona names, `focused`, or `full`.
 
 ## Coordinator Workflow
 
@@ -17,9 +18,12 @@ Use this skill to offload the tedious first pass of PR review while keeping the 
 2. If no PR can be resolved, or multiple PRs are possible, ask the user for a PR URL or number.
 3. Fetch PR metadata with `gh pr view --json title,body,files,commits,baseRefName,headRefName,url` and fetch the diff with `gh pr diff`.
 4. Read applicable project guidance such as `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, ADRs, and docs relevant to changed files.
-5. Classify changed files into review hotspots, design-important files, code-quality hotspots, persona-relevant files, and mostly mechanical files.
-6. Expand read-only source context only for selected hotspots where the diff is insufficient. Use PR head and optionally base.
-7. Spawn every persona listed in Persona Set. File triage controls context size, not whether a persona runs.
+5. Classify changed files and select personas:
+   - Named personas: run exactly those.
+   - `focused`: run the one or two personas most relevant to the material changes.
+   - `full` or no supplied scope: run all personas.
+6. Expand read-only source context only for selected personas where the diff is insufficient. Use PR head and optionally base.
+7. Spawn the selected personas.
 8. Collect persona findings using the [review finding format](review-finding-format.md), not final user-facing output.
 9. Deduplicate and merge overlapping findings, keeping persona attribution as internal evidence.
 10. Assign final severity, then rank findings by severity, confidence, and expected review value.
@@ -42,7 +46,7 @@ Final output order:
 
 1. `PR Summary`
 2. `Findings`
-3. `Code Quality Notes`
+3. `Code Quality Notes` when `code-quality` runs
 4. `Human Review Route`
 5. `File Triage`
 
@@ -94,6 +98,8 @@ Final output order:
 
 ### Code Quality Notes
 
+Include this section only when `code-quality` runs.
+
 - Include detailed readability and cleanup notes that are too small for `Findings` but still useful for review.
 - Keep each note concrete: name the line or small code shape, why it hurts readability, and the suggested change.
 - Prefer notes about names, comments, dead code, duplicate code, parameter shape, local simplification, existing helpers, file placement, and local idioms.
@@ -115,6 +121,7 @@ Final output order:
   Why it matters: [one sentence]
   Human review: [what to inspect or decide]
 
+<!-- Include only when code-quality runs. -->
 ## Code Quality Notes
 - `path:line`: [specific readability or cleanup note]. Suggestion: [short fix]
 
@@ -136,11 +143,11 @@ Final output order:
 - Do not fetch or pass existing PR review comments, review threads, or discussion comments to subagents.
 - Do not run local checks, tests, linters, typecheckers, builds, or repository commands other than GitHub PR metadata, diff fetching, and read-only source context for selected hotspots.
 
-## Persona Set
+## Personas
 
-Spawn all four personas for every review.
+- `design`: [Design Reviewer](personas/design-reviewer.md)
+- `code-quality`: [Code Quality Reviewer](personas/code-quality-reviewer.md)
+- `consistency`: [Consistency Reviewer](personas/consistency-reviewer.md)
+- `risk`: [Change Risk Reviewer](personas/change-risk-reviewer.md)
 
-- [Design Reviewer](personas/design-reviewer.md)
-- [Code Quality Reviewer](personas/code-quality-reviewer.md)
-- [Consistency Reviewer](personas/consistency-reviewer.md)
-- [Change Risk Reviewer](personas/change-risk-reviewer.md)
+In `focused` scope, select by each persona's documented Focus. Prefer `risk` when the PR changes behavior, data, permissions, configuration, or public contracts.
