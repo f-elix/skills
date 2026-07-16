@@ -19,10 +19,12 @@ Use this skill to offload the tedious first pass of PR review while keeping the 
 3. Fetch PR metadata with `gh pr view --json title,body,files,commits,baseRefName,headRefName,url` and fetch the diff with `gh pr diff`.
 4. Read applicable project guidance such as `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, ADRs, and docs relevant to changed files.
 5. Classify changed files and select personas:
+   - Treat only generated files, lockfiles, snapshots, formatting-only churn, pure moves, and repeated call-site updates as mechanical.
+   - Keep entry points, public contracts, schemas, migrations, permissions, persistence, error handling, config defaults, and tests in review scope.
    - Named personas: run exactly those.
    - `focused`: run the one or two personas most relevant to the material changes.
    - `full` or no supplied scope: run all personas.
-6. Expand read-only source context only for selected personas where the diff is insufficient. Use PR head and optionally base.
+6. Use the PR diff as primary evidence. Expand read-only source context only for selected personas where the diff is insufficient. Use PR head and optionally base.
 7. Spawn the selected personas.
 8. Collect persona findings using the [review finding format](review-finding-format.md), not final user-facing output.
 9. Deduplicate and merge overlapping findings, keeping persona attribution as internal evidence.
@@ -48,20 +50,6 @@ Final output order:
 2. `Findings`
 3. `Code Quality Notes` when `code-quality` runs
 4. `Human Review Route`
-5. `File Triage`
-
-### File Triage
-
-- List the files and diff chunks sent to each persona.
-- List mostly mechanical files omitted from focused persona review.
-- Explain why each high-priority file deserves human attention.
-- Treat files as mostly mechanical only when they are generated files, lockfiles, snapshots, formatting-only churn, bulk renames or moves with no meaningful logic change, or repeated call-site updates caused by a reviewed API change.
-- Never omit entry points, public contracts, schemas, migrations, auth or permission code, persistence code, error handling, config defaults, or tests for new behavior.
-- Use the GitHub PR diff as the primary review evidence.
-- Treat review hotspots as the highest-priority files, flows, or diff sections for human attention.
-- Expand only selected hotspots with read-only source context from the PR head, and optionally base, when the diff alone is insufficient.
-- Treat changed tests as review evidence for intended behavior, risk, and coverage gaps.
-- Send relevant test diffs especially to Change Risk, Code Quality, and Consistency reviewers.
 
 ### PR Summary
 
@@ -127,11 +115,6 @@ Include this section only when `code-quality` runs.
 
 ## Human Review Route
 - `path/or/flow`: [why it matters]. Question: [what to decide]
-
-## File Triage
-- High-priority: [files/flows]
-- Mechanical/omitted: [files grouped by reason]
-- Context expanded: [hotspot excerpts used, if any]
 ```
 
 ## Boundaries
