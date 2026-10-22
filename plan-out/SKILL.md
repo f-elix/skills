@@ -1,7 +1,6 @@
 ---
 name: plan-out
-description: Collaboratively design a code change and record agreed spec decisions and an implementation plan.
-disable-model-invocation: true
+description: Collaboratively design a code change and record agreed spec decisions and an implementation plan. Use when the user wants to plan, design, or spec out a feature, bug fix, or refactor before implementing it.
 ---
 
 Collaborate with the user to design the implementation of a feature, bug fix, refactor, or other code change. Inspect relevant code, offer your perspective and recommendation, and compare meaningful alternatives. Ask focused questions, wait for the user's perspective, and revise the design together. Read `/software-design-philosophy` as a design guide and use `/show-me` for visual representation. Focus on callstacks, interfaces, types, APIs, inputs and outputs. Show diffs where applicable. Keep text sparse, concise, precise, and meaningful. Stay in planning until the user asks for implementation.
