@@ -1,6 +1,6 @@
 # Design philosophy
 
-Review rubric derived from John Ousterhout's *A Philosophy of Software Design* and the user's `review-delegate/engineering-philosophy.md`. These are reasoning tools, not a checklist requiring findings.
+Review rubric derived from John Ousterhout's *A Philosophy of Software Design*. These are reasoning tools, not a checklist requiring findings.
 
 | Principle | What to establish in the changed code |
 |---|---|

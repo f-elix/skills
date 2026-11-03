@@ -8,11 +8,11 @@ license: MIT; see LICENSE
 
 Review through separate questions: does the implementation follow the standards, does it satisfy the requirements, and is the chosen design appropriate? Evidence for one question cannot substitute for another.
 
-Adapted from [Matt Pocock's code-review skill](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/code-review/SKILL.md), under the included MIT license. Evidence checks draw on the user's *Evidence-first PR review* artifact. The Design rubric adapts the engineering philosophy in their `review-delegate` skill and John Ousterhout's *A Philosophy of Software Design*.
+Adapted from [Matt Pocock's code-review skill](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/code-review/SKILL.md), under the included MIT license. Evidence checks draw on the user's *Evidence-first PR review* artifact. The Design rubric adapts John Ousterhout's *A Philosophy of Software Design*.
 
 ## Scope
 
-Produce a briefing in chat. Keep the reviewed code unchanged. Git fetches, temporary review checkouts, and targeted verification are permitted; PR comments, pending reviews, approvals, thread resolution, commits, pushes, and merges are outside this skill's scope. Keep `review-delegate` separate.
+Produce a briefing in chat. Keep the reviewed code unchanged. Git fetches, temporary review checkouts, and targeted verification are permitted; PR comments, pending reviews, approvals, thread resolution, commits, pushes, and merges are outside this skill's scope.
 
 Select the target from the user's request:
 
